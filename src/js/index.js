@@ -1,6 +1,17 @@
 const $ = (selector) => document.querySelector(selector);
 
+const store = {
+  setLocalStorage(menu) {
+    localStorage.setItem('menu', JSON.stringify(menu));
+  },
+  getLocalStorage() {
+    JSON.parse(localStorage.getItem('menu'));
+  },
+};
+
 function App() {
+  this.menu = [];
+
   const updateMenuCount = () => {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
     $('.menu-count').innerText = `총 ${menuCount} 개`;
@@ -11,38 +22,38 @@ function App() {
       alert('값을 입력해주세요.');
       return;
     }
+
     const espressoMenuName = $('#espresso-menu-name').value;
-    const menuItemTemplate = (espressoMenuName) => {
-      return `
-        <li class="menu-list-item d-flex items-center py-2">
-          <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-          >
-            수정
-          </button>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-          >
-            삭제
-          </button>
-        </li>`;
-    };
+    this.menu.push({ name: espressoMenuName });
+    store.setLocalStorage(this.menu);
+    const template = this.menu
+      .map((item) => {
+        return `
+          <li class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name">${item.name}</span>
+            <button
+              type="button"
+              class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+            >
+              수정
+            </button>
+            <button
+              type="button"
+              class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+            >
+              삭제
+            </button>
+          </li>`;
+      })
+      .join('');
 
-    $('#espresso-menu-list').insertAdjacentHTML(
-      'beforeend',
-      menuItemTemplate(espressoMenuName)
-    );
-
+    $('#espresso-menu-list').innerHTML = template;
     updateMenuCount();
     $('#espresso-menu-name').value = '';
   };
 
   const updateMenuName = (e) => {
     const $menuName = e.target.closest('li').querySelector('.menu-name');
-
     const menuEdit = prompt('메뉴명을 수정하세요.', $menuName.innerText);
     if (menuEdit !== null) {
       $menuName.innerText = menuEdit;
@@ -79,4 +90,5 @@ function App() {
   });
 }
 
-App();
+const app = new App();
+app;
