@@ -62,10 +62,11 @@ function App() {
   };
 
   const removeMenuName = (e) => {
-    const menuRemove = confirm('삭제 하시겠습니까?');
-    if (menuRemove) {
-      $('#espresso-menu-list').removeChild(e.target.closest('li'));
-
+    if (confirm('삭제 하시겠습니까?')) {
+      const menuId = e.target.closest('li').dataset.menuId;
+      this.menu.splice(menuId, 1);
+      store.setLocalStorage(this.menu);
+      e.target.closest('li').remove();
       updateMenuCount();
     }
   };
