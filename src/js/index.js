@@ -69,6 +69,15 @@ function App() {
       alert('값을 입력해주세요.');
       return;
     }
+    const duplicatedItem = this.menu[this.currentCategory].find(
+      (item) => item.name === $('#menu-name').value
+    );
+    if (duplicatedItem) {
+      alert('동일한 메뉴가 이미 존재합니다.');
+      $('#menu-name').value = '';
+      return;
+    }
+
     const menuName = $('#menu-name').value;
     await MenuApi.createMenu(this.currentCategory, menuName);
     render();
